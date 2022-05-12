@@ -1,13 +1,13 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-db = pd.read_csv("C:\\Users\\Leonardo\\Desktop\\AI TItanic Project\\train.csv")
-
+db = pd.read_csv("CVSs\\train.csv")
 print(db, "\n")
 
 Survived = db["Survived"].tolist()
 
 #|-------------------------------------------------------DATA ANALISYS FARE-SURVIVORS-------------------------------------------------------|
+"""     Aint working
 Fare = db["Fare"].tolist()
 Fare_set = set(Fare)
 Fare_dict = {}
@@ -17,7 +17,7 @@ for i in Fare_set:                                                              
     Fare_dict[str(i)] = Fare.count(list(Fare_set)[list(Fare_set).index(i)])
 
 for i in Fare_dict.keys():                                                          #creating the dictionary containing the number of survived for each ticked -> {TicketFare : n(Survived(TicketFare))}
-    Fare_sur_dict[i] = len(list(db.query("Fare == {} and Survived == 1".format(list(Fare_dict.keys())[i]).index)))
+    Fare_sur_dict[i] = len(list(db.query("Fare == {} and Survived == 1".format(i))))    #<-- here's the problem, i should be the fare but it gives always 12 results even if tere's less number of tickets with such fare
 
 for i in Fare_dict.keys():
     if Fare_sur_dict[i] != 0:
@@ -27,7 +27,7 @@ for i in Fare_dict.keys():
         print("People with the {} thicket survived: 0%".format(i),
             "- {}".format(Fare_sur_dict[i]), "/ {}".format(Fare_dict[i]))
 
-
+"""
 #|--------------------------------------------------DATA ANALISYS PASSENGER CLASS-SURVIVORS--------------------------------------------------|
 Pclass = db["Pclass"].tolist()
 Counter1 = 0
