@@ -6,8 +6,8 @@ print(db, "\n")
 
 Survived = db["Survived"].tolist()
 
-#|-------------------------------------------------------DATA ANALISYS FARE-SURVIVORS-------------------------------------------------------|
-"""     Aint working
+#|-------------------------------------------------------DATA ANALYSIS FARE-SURVIVORS-------------------------------------------------------|
+"""
 Fare = db["Fare"].tolist()
 Fare_set = set(Fare)
 Fare_dict = {}
@@ -17,7 +17,7 @@ for i in Fare_set:                                                              
     Fare_dict[str(i)] = Fare.count(list(Fare_set)[list(Fare_set).index(i)])
 
 for i in Fare_dict.keys():                                                          #creating the dictionary containing the number of survived for each ticked -> {TicketFare : n(Survived(TicketFare))}
-    Fare_sur_dict[i] = len(list(db.query("Fare == {} and Survived == 1".format(i))))    #<-- here's the problem, i should be the fare but it gives always 12 results even if tere's less number of tickets with such fare
+    Fare_sur_dict[i] = len(list(db.query("Fare == {} and Survived == 1".format(i)).index))    #<-- here's the problem, I don't know what the hell it is doing
 
 for i in Fare_dict.keys():
     if Fare_sur_dict[i] != 0:
@@ -28,7 +28,7 @@ for i in Fare_dict.keys():
             "- {}".format(Fare_sur_dict[i]), "/ {}".format(Fare_dict[i]))
 
 """
-#|--------------------------------------------------DATA ANALISYS PASSENGER CLASS-SURVIVORS--------------------------------------------------|
+#|--------------------------------------------------DATA ANALYSIS PASSENGER CLASS-SURVIVORS--------------------------------------------------|
 Pclass = db["Pclass"].tolist()
 Counter1 = 0
 Counter2 = 0
@@ -46,7 +46,7 @@ print("\nThird class survivors: ", "{:.2f}".format(Counter1/Pclass.count(3)*100)
 
 
 
-#|--------------------------------------------------------DATA ANALISYS SEX-SURVIVORS--------------------------------------------------------|
+#|--------------------------------------------------------DATA ANALYSIS SEX-SURVIVORS--------------------------------------------------------|
 Sex = db["Sex"].tolist()
 Counter1 = 0
 Counter2 = 0
@@ -60,7 +60,7 @@ print("Male survivors: ", "{:.2f}".format(Counter1/Sex.count("male")*100),"%\n",
 
 
 
-#|------------------------------------------------DATA ANALISYS SIBLINGS OR SPOUSES-SURVIVORS------------------------------------------------|
+#|------------------------------------------------DATA ANALYSIS SIBLINGS OR SPOUSES-SURVIVORS------------------------------------------------|
 SibSp = db["SibSp"].tolist()
 Amount_SibSp = set(SibSp)
 Fuck_The_Name_of_This_Dictionary = {}
@@ -82,3 +82,20 @@ for i in Fuck_This_One_Too.keys():                                              
             "- {}".format(Fuck_This_One_Too[i]), "/ {}".format(Fuck_The_Name_of_This_Dictionary[i]))
 
 
+#|--------------------------------------------------------DATA ANALYSIS AGE-SURVIVORS--------------------------------------------------------|
+Age = db["Age"].tolist()
+Age_set = set(Age)
+Age_sur_dict = {}
+Age_dict = {}
+for i in Age_set:
+    Age_dict[i] = Age.count(i)
+for i in Age_set:
+    Age_sur_dict[i] = len(list(db.query("Survived == 1 and Age == {}".format(i)).index))
+
+for i in Age_sur_dict.keys():
+    if Age_sur_dict[i] != 0:
+        print("Survivors {} years old:".format(i), "{:.2f}".format(Age_sur_dict[i]/Age_dict[i]+100), "%",
+        "- {}".format(Age_sur_dict[i]), "/ {}".format(Age_dict[i]))
+    else:
+        print("Survivors {} years old: 0%".format(i),
+        "- {}".format(Age_sur_dict[i]), "/ {}".format(Age_dict[i]))
