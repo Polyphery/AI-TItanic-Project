@@ -92,7 +92,7 @@ for i in Actual_Age:
     Age_dict[i] = Age.count(i)
 for i in Actual_Age:
     Age_sur_dict[i] = len(list(db.query("Survived == 1 and Age == {}".format(i)).index))
-
+"""
 for i in Age_sur_dict.keys():
     if Age_sur_dict[i] != 0:
         print("Survivors {} years old:".format(i), "{:.2f}".format(Age_sur_dict[i]/Age_dict[i]*100), "%",
@@ -100,3 +100,14 @@ for i in Age_sur_dict.keys():
     else:
         print("Survivors {} years old: 0%".format(i),
         "- {}".format(Age_sur_dict[i]), "/ {}".format(Age_dict[i]))
+"""
+
+#|-------------------------------------------------------DATA ANALYSIS CABIN-SURVIVORS-------------------------------------------------------|
+Cabins = [i for i in db["Cabin"].tolist() if str(i) != "NaN" and str(i) != "nan"]
+Cabins_set = set(Cabins)
+print(Cabins)
+Cabin_survived = {}
+for i in Cabins_set:
+    Cabin_survived[i] = len(list(db.query("Cabin == {} and Survived == 1".format(str(i))).index))
+
+print(Cabin_survived)
