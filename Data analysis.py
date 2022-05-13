@@ -1,3 +1,4 @@
+from string import ascii_uppercase
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -18,7 +19,7 @@ for i in Actual_Fares:                                                          
 
 for i in Fare_dict.keys():                                                          #creating the dictionary containing the number of survived for each ticked -> {TicketFare : n(Survived(TicketFare))}
     Fare_sur_dict[i] = len(list(db.query("Fare == {} and Survived == 1".format(i)).index))    
-"""
+
 for i in Fare_dict.keys():
     if Fare_sur_dict[i] != 0:
         print("People with the {} thicket survived:".format(i), "{:.2f}%".format(Fare_sur_dict[i]/Fare_dict[i]*100),
@@ -26,7 +27,7 @@ for i in Fare_dict.keys():
     else:
         print("People with the {} thicket survived: 0%".format(i),
             "- {}".format(Fare_sur_dict[i]), "/ {}".format(Fare_dict[i]))
-"""
+
 
 #|--------------------------------------------------DATA ANALYSIS PASSENGER CLASS-SURVIVORS--------------------------------------------------|
 Pclass = db["Pclass"].tolist()
@@ -40,11 +41,11 @@ for i in range(len(Survived)):                                                  
         Counter2 += 1
     elif Pclass[i] == 1 and Survived[i]:
         Counter3 += 1
-"""
+
 print("\nThird class survivors: ", "{:.2f}".format(Counter1/Pclass.count(3)*100),"%\n", 
     "Second class survivors: ", "{:.2f}".format(Counter2/Pclass.count(2)*100),"%\n", 
     "First class survivors: ", "{:.2f}".format(Counter3/Pclass.count(1)*100),"%\n\n",)
-"""
+
 
 #|--------------------------------------------------------DATA ANALYSIS SEX-SURVIVORS--------------------------------------------------------|
 Sex = db["Sex"].tolist()
@@ -55,10 +56,10 @@ for i in range(len(Survived)):                                                  
         Counter1 += 1
     elif Sex[i] == "female" and Survived[i]:
         Counter2 += 1
-"""
+
 print("Male survivors: ", "{:.2f}".format(Counter1/Sex.count("male")*100),"%\n", 
     "Female survivors: ", "{:.2f}".format(Counter2/Sex.count("female")*100), "%\n\n")
-"""
+
 
 
 #|------------------------------------------------DATA ANALYSIS SIBLINGS OR SPOUSES-SURVIVORS------------------------------------------------|
@@ -73,7 +74,7 @@ for i in list(Amount_SibSp):                                                    
 
 for i in list(Amount_SibSp):                                                        #Creating a dictionary containing the number of survivors based on the amount of siblings and spouses -> {N : n(N)}
     Fuck_This_One_Too[i] = len(list(db.query("Survived == 1 and SibSp == {}".format(i)).index))
-"""
+
 for i in Fuck_This_One_Too.keys():                                                  #Outputting the percentage of survivors
     if Fuck_This_One_Too[i] != 0:
         print("Survivors with {} siblings or spouses: ".format(i), "{:.2f}".format(Fuck_This_One_Too[i]/Fuck_The_Name_of_This_Dictionary[i]*100), "%",
@@ -81,7 +82,7 @@ for i in Fuck_This_One_Too.keys():                                              
     else: 
         print("Survivors with {} siblings or spouses: 0%".format(i),
             "- {}".format(Fuck_This_One_Too[i]), "/ {}".format(Fuck_The_Name_of_This_Dictionary[i]))
-"""
+
 #|--------------------------------------------------------DATA ANALYSIS AGE-SURVIVORS--------------------------------------------------------|
 Age = db["Age"].tolist()
 Age_set = set(Age)
@@ -92,7 +93,7 @@ for i in Actual_Age:
     Age_dict[i] = Age.count(i)
 for i in Actual_Age:
     Age_sur_dict[i] = len(list(db.query("Survived == 1 and Age == {}".format(i)).index))
-"""
+
 for i in Age_sur_dict.keys():
     if Age_sur_dict[i] != 0:
         print("Survivors {} years old:".format(i), "{:.2f}".format(Age_sur_dict[i]/Age_dict[i]*100), "%",
@@ -100,17 +101,35 @@ for i in Age_sur_dict.keys():
     else:
         print("Survivors {} years old: 0%".format(i),
         "- {}".format(Age_sur_dict[i]), "/ {}".format(Age_dict[i]))
-"""
+
 
 #|-------------------------------------------------------DATA ANALYSIS CABIN-SURVIVORS-------------------------------------------------------|
 db.replace("", float("NaN"), inplace = True)
 db.dropna(subset = ["Cabin"], inplace = True) 
 Cabins_sur = db.query("Survived == 1")
+Csl = Cabins_sur["Cabin"].tolist()
 Cabins_ded = db.query("Survived == 0")
+Cdl = Cabins_ded["Cabin"].tolist()
 
-print(Cabins_sur["Cabin"].tolist(), Cabins_ded["Cabin"].tolist())
-for i in Cabins_sur["Cabin"].tolist():
-    if i in Cabins_ded["Cabin"].tolist():
-        print(i, "- {} survived".format(Cabins_sur["Cabin"].tolist().count(i)), 
-        "- {} died".format(Cabins_ded["Cabin"].tolist().count(i)))
+Cabins_sur_dict = {i:[] for i in ascii_uppercase}
+Cabins_ded_dict = {i:[] for i in ascii_uppercase}
 
+for i in list(ascii_uppercase):
+    for j in Csl:
+        if i in j:
+            Cabins_sur_dict[i].append(j)
+    for j in Cdl:
+        if i in j:
+            Cabins_ded_dict[i].append(j)
+
+for i in list(Cabins_sur_dict.keys()):
+    if Cabins_sur_dict[i] == []:
+        del Cabins_sur_dict[i]
+for i in list(Cabins_ded_dict.keys()):
+    if Cabins_ded_dict[i] == []:
+        del Cabins_ded_dict[i]
+
+for i in Cabins_sur_dict.items():
+    print(i)
+for i in Cabins_ded_dict.items():
+    print(i)
