@@ -17,7 +17,7 @@ for i in Actual_Fares:                                                          
     Fare_dict[str(i)] = Fare.count(i)
 
 for i in Fare_dict.keys():                                                          #creating the dictionary containing the number of survived for each ticked -> {TicketFare : n(Survived(TicketFare))}
-    Fare_sur_dict[i] = len(list(db.query("Fare == {} and Survived == 1".format(i)).index))    #<-- here's the problem, I don't know what the hell it is doing
+    Fare_sur_dict[i] = len(list(db.query("Fare == {} and Survived == 1".format(i)).index))    
 """
 for i in Fare_dict.keys():
     if Fare_sur_dict[i] != 0:
@@ -103,11 +103,14 @@ for i in Age_sur_dict.keys():
 """
 
 #|-------------------------------------------------------DATA ANALYSIS CABIN-SURVIVORS-------------------------------------------------------|
-Cabins = [i for i in db["Cabin"].tolist() if str(i) != "NaN" and str(i) != "nan"]
-Cabins_set = set(Cabins)
-print(Cabins)
-Cabin_survived = {}
-for i in Cabins_set:
-    Cabin_survived[i] = len(list(db.query("Cabin == {} and Survived == 1".format(str(i))).index))
+db.replace("", float("NaN"), inplace = True)
+db.dropna(subset = ["Cabin"], inplace = True) 
+Cabins_sur = db.query("Survived == 1")
+Cabins_ded = db.query("Survived == 0")
 
-print(Cabin_survived)
+print(Cabins_sur["Cabin"].tolist(), Cabins_ded["Cabin"].tolist())
+for i in Cabins_sur["Cabin"].tolist():
+    if i in Cabins_ded["Cabin"].tolist():
+        print(i, "- {} survived".format(Cabins_sur["Cabin"].tolist().count(i)), 
+        "- {} died".format(Cabins_ded["Cabin"].tolist().count(i)))
+
